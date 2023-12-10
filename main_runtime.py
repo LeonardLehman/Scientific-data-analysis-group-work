@@ -42,4 +42,24 @@ average_renewables_by_year = renewables_df_1990_2020.groupby('Year')['Renewables
 co2_df_1990_2020 = filtered_co2_df[(filtered_co2_df['Year'] >= 1990) & (filtered_co2_df['Year'] <= 2020)]
 average_co2_by_year = co2_df_1990_2020.groupby('Year')['Per capita consumption-based CO₂ emissions'].mean().tolist()
 
+"""
+Funtions or 
 
+"""
+
+def renewables_gdp_percapita(directory, country_code):
+    dataframe = pd.read_csv(directory, skiprows=range(4))
+    
+    # Filter the DataFrame based on the regional entity (Country Code)
+    filtered_data = dataframe[dataframe['Country Code'] == country_code]
+    
+    # Extract the years and corresponding GDP values into a Pandas DataFrame
+    gdp_data_df = filtered_data.iloc[:, 4:]  # Assuming GDP values start from the 5th column
+    gdp_data_df = gdp_data_df.T.reset_index()
+    gdp_data_df.columns = ['Year', 'GDP (current US$)']
+    
+    # Convert 'Year' column to numeric and exclude non-numeric values
+    gdp_data_df['Year'] = pd.to_numeric(gdp_data_df['Year'], errors='coerce')
+    gdp_data_df = gdp_data_df.dropna(subset=['Year'])
+    
+    return gdp_data_df
